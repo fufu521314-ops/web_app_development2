@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}首頁 - 小說閱讀器{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12 mb-4">
+        <h2 class="border-bottom pb-2">🔥 熱門推薦</h2>
+        <div class="row row-cols-1 row-cols-md-5 g-4">
+            {% for novel in popular_novels %}
+            <div class="col">
+                <div class="card h-100 novel-card shadow-sm">
+                    <img src="{{ novel.cover_image or 'https://via.placeholder.com/200x300?text=No+Cover' }}" class="card-img-top" alt="{{ novel.title }}">
+                    <div class="card-body">
+                        <h5 class="card-title text-truncate">{{ novel.title }}</h5>
+                        <p class="card-text text-muted small">{{ novel.author }}</p>
+                        <p class="card-text small text-truncate-2">{{ novel.description[:50] }}...</p>
+                    </div>
+                    <div class="card-footer bg-transparent border-0">
+                        <a href="{{ url_for('reader.detail', novel_id=novel.id) }}" class="btn btn-sm btn-primary w-100">立即閱讀</a>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <p class="text-center w-100 py-5 text-muted">目前尚無熱門小說。</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="col-12 mt-4">
+        <h2 class="border-bottom pb-2">🆕 最新上架</h2>
+        <div class="row row-cols-1 row-cols-md-5 g-4">
+            {% for novel in latest_novels %}
+            <div class="col">
+                <div class="card h-100 novel-card shadow-sm">
+                    <img src="{{ novel.cover_image or 'https://via.placeholder.com/200x300?text=No+Cover' }}" class="card-img-top" alt="{{ novel.title }}">
+                    <div class="card-body">
+                        <h5 class="card-title text-truncate">{{ novel.title }}</h5>
+                        <p class="card-text text-muted small">{{ novel.author }}</p>
+                    </div>
+                    <div class="card-footer bg-transparent border-0">
+                        <a href="{{ url_for('reader.detail', novel_id=novel.id) }}" class="btn btn-sm btn-outline-primary w-100">查看詳情</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}{{ chapter.title }} - {{ novel.title }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}">首頁</a></li>
+                <li class="breadcrumb-item"><a href="{{ url_for('reader.detail', novel_id=novel.id) }}">{{ novel.title }}</a></li>
+                <li class="breadcrumb-item active">第 {{ chapter.chapter_num }} 章</li>
+            </ol>
+        </nav>
+
+        <div class="card shadow-sm mt-4">
+            <div class="card-body p-5">
+                <h2 class="text-center mb-5">{{ chapter.title }}</h2>
+                <div class="reader-content" style="font-size: 1.2rem; line-height: 2; white-space: pre-wrap;">{{ chapter.content }}</div>
+            </div>
+            <div class="card-footer bg-white d-flex justify-content-between p-4">
+                {% set prev_num = chapter.chapter_num - 1 %}
+                {% set next_num = chapter.chapter_num + 1 %}
+                
+                <a href="{{ url_for('reader.read', novel_id=novel.id, chapter_num=prev_num) }}" class="btn btn-outline-secondary {% if prev_num < 1 %}disabled{% endif %}">上一章</a>
+                <a href="{{ url_for('reader.detail', novel_id=novel.id) }}" class="btn btn-outline-primary">回目錄</a>
+                <a href="{{ url_for('reader.read', novel_id=novel.id, chapter_num=next_num) }}" class="btn btn-outline-secondary">下一章</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

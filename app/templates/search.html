@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}搜尋結果: {{ query }} - 小說閱讀器{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h3 class="mb-4">🔍 搜尋「{{ query }}」的結果</h3>
+        <div class="row row-cols-1 row-cols-md-4 g-4">
+            {% for novel in results %}
+            <div class="col">
+                <div class="card h-100 shadow-sm">
+                    <img src="{{ novel.cover_image or 'https://via.placeholder.com/200x300?text=No+Cover' }}" class="card-img-top" alt="{{ novel.title }}" style="height: 200px; object-fit: cover;">
+                    <div class="card-body">
+                        <h5 class="card-title text-truncate">{{ novel.title }}</h5>
+                        <p class="card-text small text-muted">{{ novel.author }}</p>
+                    </div>
+                    <div class="card-footer bg-transparent border-0">
+                        <a href="{{ url_for('reader.detail', novel_id=novel.id) }}" class="btn btn-sm btn-primary w-100">查看</a>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="col-12 text-center py-5">
+                <p class="text-muted">找不到符合「{{ query }}」的小說。</p>
+                <a href="{{ url_for('main.index') }}" class="btn btn-link">回首頁</a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

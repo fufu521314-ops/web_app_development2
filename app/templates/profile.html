@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}個人中心 - 小說閱讀器{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12 mb-5">
+        <h2 class="border-bottom pb-2">📖 最近閱讀紀錄</h2>
+        <div class="row row-cols-1 row-cols-md-5 g-4 mt-2">
+            {% for record in records %}
+            <div class="col">
+                <div class="card h-100 shadow-sm border-info">
+                    <div class="card-body">
+                        <h6 class="card-title text-truncate">{{ record.novel.title }}</h6>
+                        <p class="card-text small text-muted">上次看到：第 {{ record.last_chapter_id }} 章</p>
+                    </div>
+                    <div class="card-footer bg-transparent border-0">
+                        <a href="{{ url_for('reader.detail', novel_id=record.novel_id) }}" class="btn btn-sm btn-info w-100 text-white">繼續閱讀</a>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="col-12 text-muted py-3">暫無閱讀紀錄。</div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="col-12">
+        <h2 class="border-bottom pb-2">❤️ 我的收藏書單</h2>
+        <div class="row row-cols-1 row-cols-md-5 g-4 mt-2">
+            {% for collection in collections %}
+            <div class="col">
+                <div class="card h-100 novel-card shadow-sm border-danger">
+                    <img src="{{ collection.novel.cover_image or 'https://via.placeholder.com/200x300?text=No+Cover' }}" class="card-img-top" alt="{{ collection.novel.title }}">
+                    <div class="card-body">
+                        <h6 class="card-title text-truncate">{{ collection.novel.title }}</h6>
+                        <p class="card-text small text-muted">{{ collection.novel.author }}</p>
+                    </div>
+                    <div class="card-footer bg-transparent border-0">
+                        <div class="btn-group w-100">
+                            <a href="{{ url_for('reader.detail', novel_id=collection.novel_id) }}" class="btn btn-sm btn-outline-primary">詳情</a>
+                            <form action="{{ url_for('reader.collect', novel_id=collection.novel_id) }}" method="POST" class="d-inline flex-grow-1">
+                                <input type="hidden" name="action" value="remove">
+                                <button type="submit" class="btn btn-sm btn-outline-danger w-100">取消收藏</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="col-12 text-muted py-3">目前還沒有收藏的小說。</div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

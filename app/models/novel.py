@@ -23,32 +23,62 @@ class Novel(db.Model):
 
     @staticmethod
     def create(title, author, description=None, category=None, cover_image=None):
-        novel = Novel(title=title, author=author, description=description, 
-                      category=category, cover_image=cover_image)
-        db.session.add(novel)
-        db.session.commit()
-        return novel
+        """建立新小說"""
+        try:
+            novel = Novel(title=title, author=author, description=description, 
+                          category=category, cover_image=cover_image)
+            db.session.add(novel)
+            db.session.commit()
+            return novel
+        except Exception as e:
+            db.session.rollback()
+            print(f"建立小說失敗: {e}")
+            return None
 
     @staticmethod
     def get_all():
-        return Novel.query.all()
+        """取得所有小說"""
+        try:
+            return Novel.query.all()
+        except Exception as e:
+            print(f"取得所有小說失敗: {e}")
+            return []
 
     @staticmethod
     def get_by_id(novel_id):
-        return Novel.query.get(novel_id)
+        """根據 ID 取得單一小說"""
+        try:
+            return Novel.query.get(novel_id)
+        except Exception as e:
+            print(f"取得小說失敗 (ID: {novel_id}): {e}")
+            return None
 
     def update(self, title=None, author=None, description=None, category=None, cover_image=None, views=None):
-        if title: self.title = title
-        if author: self.author = author
-        if description: self.description = description
-        if category: self.category = category
-        if cover_image: self.cover_image = cover_image
-        if views is not None: self.views = views
-        db.session.commit()
+        """更新小說資訊"""
+        try:
+            if title: self.title = title
+            if author: self.author = author
+            if description: self.description = description
+            if category: self.category = category
+            if cover_image: self.cover_image = cover_image
+            if views is not None: self.views = views
+            db.session.commit()
+            return True
+        except Exception as e:
+            db.session.rollback()
+            print(f"更新小說失敗: {e}")
+            return False
 
     def delete(self):
-        db.session.delete(self)
-        db.session.commit()
+        """刪除小說"""
+        try:
+            db.session.delete(self)
+            db.session.commit()
+            return True
+        except Exception as e:
+            db.session.rollback()
+            print(f"刪除小說失敗: {e}")
+            return False
 
 class Chapter(db.Model):
     __tablename__ = 'chapters'
@@ -65,25 +95,55 @@ class Chapter(db.Model):
 
     @staticmethod
     def create(novel_id, title, content, chapter_num):
-        chapter = Chapter(novel_id=novel_id, title=title, content=content, chapter_num=chapter_num)
-        db.session.add(chapter)
-        db.session.commit()
-        return chapter
+        """建立新章節"""
+        try:
+            chapter = Chapter(novel_id=novel_id, title=title, content=content, chapter_num=chapter_num)
+            db.session.add(chapter)
+            db.session.commit()
+            return chapter
+        except Exception as e:
+            db.session.rollback()
+            print(f"建立章節失敗: {e}")
+            return None
 
     @staticmethod
     def get_by_novel_id(novel_id):
-        return Chapter.query.filter_by(novel_id=novel_id).order_by(Chapter.chapter_num).all()
+        """取得特定小說的所有章節"""
+        try:
+            return Chapter.query.filter_by(novel_id=novel_id).order_by(Chapter.chapter_num).all()
+        except Exception as e:
+            print(f"取得章節失敗 (Novel ID: {novel_id}): {e}")
+            return []
 
     @staticmethod
     def get_by_id(chapter_id):
-        return Chapter.query.get(chapter_id)
+        """根據 ID 取得單一章節"""
+        try:
+            return Chapter.query.get(chapter_id)
+        except Exception as e:
+            print(f"取得章節失敗 (ID: {chapter_id}): {e}")
+            return None
 
     def update(self, title=None, content=None, chapter_num=None):
-        if title: self.title = title
-        if content: self.content = content
-        if chapter_num is not None: self.chapter_num = chapter_num
-        db.session.commit()
+        """更新章節資訊"""
+        try:
+            if title: self.title = title
+            if content: self.content = content
+            if chapter_num is not None: self.chapter_num = chapter_num
+            db.session.commit()
+            return True
+        except Exception as e:
+            db.session.rollback()
+            print(f"更新章節失敗: {e}")
+            return False
 
     def delete(self):
-        db.session.delete(self)
-        db.session.commit()
+        """刪除章節"""
+        try:
+            db.session.delete(self)
+            db.session.commit()
+            return True
+        except Exception as e:
+            db.session.rollback()
+            print(f"刪除章節失敗: {e}")
+            return False

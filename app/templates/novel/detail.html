@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}{{ novel.title }} - 小說詳情{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-3">
+        <img src="{{ novel.cover_image or 'https://via.placeholder.com/300x450?text=No+Cover' }}" class="img-fluid rounded shadow" alt="{{ novel.title }}">
+    </div>
+    <div class="col-md-9">
+        <div class="d-flex justify-content-between align-items-start">
+            <h1>{{ novel.title }}</h1>
+            <form action="{{ url_for('reader.collect', novel_id=novel.id) }}" method="POST">
+                <input type="hidden" name="action" value="add">
+                <button type="submit" class="btn btn-outline-danger">❤️ 加入收藏</button>
+            </form>
+        </div>
+        <p class="text-muted">作者：{{ novel.author }} | 分類：{{ novel.category }} | 觀看數：{{ novel.views }}</p>
+        <hr>
+        <h5>內容簡介</h5>
+        <p class="lh-lg">{{ novel.description }}</p>
+        
+        <div class="mt-5">
+            <h3>章節列表</h3>
+            <div class="list-group mt-3">
+                {% for chapter in novel.chapters|sort(attribute='chapter_num') %}
+                <a href="{{ url_for('reader.read', novel_id=novel.id, chapter_num=chapter.chapter_num) }}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                    第 {{ chapter.chapter_num }} 章：{{ chapter.title }}
+                    <span class="badge bg-primary rounded-pill">閱讀</span>
+                </a>
+                {% else %}
+                <p class="text-muted">暫無章節內容。</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}排行榜 - 小說閱讀器{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <h2 class="text-center mb-4">🏆 小說人氣排行榜</h2>
+        <div class="list-group shadow-sm">
+            {% for novel in novels %}
+            <a href="{{ url_for('reader.detail', novel_id=novel.id) }}" class="list-group-item list-group-item-action d-flex align-items-center p-3">
+                <div class="me-4 text-center" style="width: 30px;">
+                    <span class="h4 {% if loop.index <= 3 %}text-danger font-weight-bold{% else %}text-muted{% endif %}">{{ loop.index }}</span>
+                </div>
+                <img src="{{ novel.cover_image or 'https://via.placeholder.com/50x75?text=Cover' }}" class="rounded me-3" style="width: 50px; height: 75px; object-fit: cover;">
+                <div class="flex-grow-1">
+                    <h5 class="mb-1">{{ novel.title }}</h5>
+                    <small class="text-muted">{{ novel.author }} | {{ novel.category }}</small>
+                </div>
+                <div class="text-end text-muted small">
+                    👁️ {{ novel.views }}
+                </div>
+            </a>
+            {% else %}
+            <p class="text-center py-5 text-muted">目前暫無排行資料。</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
